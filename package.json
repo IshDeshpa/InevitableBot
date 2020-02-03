@@ -1,0 +1,11 @@
+{
+	"name": "Inevitable",
+	"version": "1.0.0",
+	"description": "IshDeshpa Discord Bot",
+	"main": "bot1.js",
+	"author": "IshDeshpa",
+	"dependencies": {
+		"discord.js": "^11.5.1",
+		"nodemon": "^2.0.2"
+	}
+}
