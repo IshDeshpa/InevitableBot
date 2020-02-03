@@ -1,8 +1,8 @@
 require('dotenv').config(); 
 const Discord = require('discord.js');
-const fs = require('fs');
+//const fs = require('fs');
 
-var auth = JSON.parse(fs.readFileSync("auth.json"));
+//var auth = JSON.parse(fs.readFileSync("auth.json"));
 
 const client = new Discord.Client();
 
