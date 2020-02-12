@@ -1,25 +1,29 @@
-require('dotenv').config(); 
+require('dotenv').config();
 const Discord = require('discord.js');
-//const fs = require('fs');
+const ytdl = require('ytdl-core');
 
 //var auth = JSON.parse(fs.readFileSync("auth.json"));
 
 const client = new Discord.Client();
+var audioStream = null;
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
 client.on('message', msg => {
-  
 	  if (msg.content.substring(0, 1) == '=') {
 	    var args = msg.content.substring(1).split(' ');
 	    var cmd = args[0];
-	   
+	   	
+	   	//console.log(args);
+	    
 	    args = args.splice(1);
+
 	    switch(cmd) {
 	        case 'ping':
 	            msg.reply("pong");
+	            break;
 	        case 'shift':
 	        	if(msg.member.roles.find(val => val.name == "Thanos") != null){
 		        	if(msg.member.voiceChannel == null){
@@ -31,9 +35,25 @@ client.on('message', msg => {
 		        	}
 		        	var channels = client.channels.array();
 		        	var newChan = null;
+		        	var newChanName = "";
 		        	
+		        	if(args[0][0] == "\""){
+		        		var argCt = 0;
+		        		while(argCt < args.length && args[argCt][args[argCt].length-1] != "\""){
+		        			newChanName += args[argCt] + " ";
+		        			argCt++;
+		        		}
+		        		newChanName += args[argCt];
+		        		newChanName = newChanName.substring(1, newChanName.length - 1);
+		        	}
+		        	else{
+		        		newChanName = args[0];
+		        	}
+
+		        	//console.log(newChanName);
+
 		        	channels.forEach(function(item, index, array){
-		        		if(item.type == 'voice' && item.name == args[0]){
+		        		if(item.type == 'voice' && item.name == newChanName){
 		        			newChan = item;
 		        		}
 		        	});
@@ -66,8 +86,31 @@ client.on('message', msg => {
 							msg.delete(5000);
 						})
 				}
+				break;
+			case 'play':
+				/*if(msg.member.voiceChannel.speakable){
+					msg.member.voiceChannel.join().then(connection => {
+						const audioStream = connection.playStream(ytdl(args[0]))
+							.on('end', () => {
+								msg.member.voiceChannel.leave();
+							})
+							.on('error', () => {
+								console.error(error);
+							});
+						audioStream.setVolumeLogarithmic(0.5);
+					});
+
+				}
+				break;
+			case 'pause':
+				if(audioStream != null){
+					while(!audioStream.paused)
+						audioStream.pause();
+				}*/
+				break;
+
 	    }
   }
 });
 
-client.login(process.env.BOT_TOKEN);
+client.login("NjczNjA2OTY3NDg2NDQ3Njkw.XjedIQ.nSvqGlAH_vg4JORxzqixp0Z2Wy4");
