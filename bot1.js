@@ -43,22 +43,27 @@ client.on('message', msg => {
 		        	}
 		        	var channels = client.channels.array();
 
-		        	var splitQuotes = argStr.substring(1).split('\"');
-		        	
-		        	//console.log(splitQuotes);
+		        	if(argStr.includes('\"')){
+			        	var splitQuotes = argStr.split('\"');
 
-		        	if(splitQuotes[splitQuotes.length - 1] == " "){
-		        		splitQuotes = splitQuotes.slice(1, -1);
-		        	}
+			        	if(splitQuotes[splitQuotes.length - 1] == " "){
+			        		splitQuotes = splitQuotes.slice(1, -1);
+			        	}
+			        	else{
+			        		splitQuotes = splitQuotes.slice(1, splitQuotes.length);
+			        	}
+
+			        	args.push(splitQuotes[0]);
+			        	splitQuotes.splice(0, 1);
+
+			        	if(splitQuotes[0] != null)
+			        		args.push(splitQuotes[0].split(' '));
+		        	} 
 		        	else{
-		        		splitQuotes = splitQuotes.slice(1, splitQuotes.length);
+		        		var splitSpaces = argStr.split(' ');
+		        		args = splitSpaces;
+		        		args.splice(0, 1);
 		        	}
-
-		        	args.push(splitQuotes[0]);
-		        	splitQuotes.splice(0, 1);
-
-		        	if(splitQuotes[0] != null)
-		        		args.push(splitQuotes[0].split(' '));
 
 		        	var newChan = null;
 		        	var newChanName = args[0];
@@ -126,4 +131,5 @@ client.on('message', msg => {
   }
 });
 
+//console.log(process.env.BOT_TOKEN);
 client.login(process.env.BOT_TOKEN);
