@@ -2,6 +2,8 @@ require('dotenv').config();
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 
+var prefix = '=';
+
 //var auth = JSON.parse(fs.readFileSync("auth.json"));
 
 const client = new Discord.Client();
@@ -12,13 +14,19 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-	  if (msg.content.substring(0, 1) == '=') {
-	    var args = msg.content.substring(1).split(' ');
-	    var cmd = args[0];
-	   	
-	   	//console.log(args);
-	    
-	    args = args.splice(1);
+	  if (msg.content.substring(0, 1) == prefix) {
+	    var spaceInd = msg.content.indexOf(" ");
+	    var cmd;
+	    if(spaceInd != -1){
+	    	cmd = msg.content.substring(1, msg.content.indexOf(' '));
+	    }
+	    else{
+	    	cmd = msg.content.substring(1);
+	    	spaceInd = msg.content.length - 1;
+	    }
+
+	    var argStr = msg.content.substring(spaceInd);
+	    var args = [];
 
 	    switch(cmd) {
 	        case 'ping':
@@ -34,23 +42,26 @@ client.on('message', msg => {
 		        		break;
 		        	}
 		        	var channels = client.channels.array();
-		        	var newChan = null;
-		        	var newChanName = "";
+
+		        	var splitQuotes = argStr.substring(1).split('\"');
 		        	
-		        	if(args[0][0] == "\""){
-		        		var argCt = 0;
-		        		while(argCt < args.length && args[argCt][args[argCt].length-1] != "\""){
-		        			newChanName += args[argCt] + " ";
-		        			argCt++;
-		        		}
-		        		newChanName += args[argCt];
-		        		newChanName = newChanName.substring(1, newChanName.length - 1);
+		        	//console.log(splitQuotes);
+
+		        	if(splitQuotes[splitQuotes.length - 1] == " "){
+		        		splitQuotes = splitQuotes.slice(1, -1);
 		        	}
 		        	else{
-		        		newChanName = args[0];
+		        		splitQuotes = splitQuotes.slice(1, splitQuotes.length);
 		        	}
 
-		        	//console.log(newChanName);
+		        	args.push(splitQuotes[0]);
+		        	splitQuotes.splice(0, 1);
+
+		        	if(splitQuotes[0] != null)
+		        		args.push(splitQuotes[0].split(' '));
+
+		        	var newChan = null;
+		        	var newChanName = args[0];
 
 		        	channels.forEach(function(item, index, array){
 		        		if(item.type == 'voice' && item.name == newChanName){
@@ -58,7 +69,7 @@ client.on('message', msg => {
 		        		}
 		        	});
 
-		        	if(args[0] == null || newChan == null){
+		        	if(newChan == null){
 		        		msg.reply("Please enter a valid voice channel you would like to move to.")
 			        		.then(msg =>{
 			        				msg.delete(5000);
@@ -78,6 +89,7 @@ client.on('message', msg => {
 		        		if(item.permissionsIn(newChan).has("CONNECT"))
 		        			item.setVoiceChannel(newChan);
 		        	});
+		        	
 		        	break;
 		        }
 		        else{
@@ -86,6 +98,7 @@ client.on('message', msg => {
 							msg.delete(5000);
 						})
 				}
+				
 				break;
 			case 'play':
 				/*if(msg.member.voiceChannel.speakable){
