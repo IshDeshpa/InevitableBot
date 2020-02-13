@@ -126,4 +126,4 @@ client.on('message', msg => {
   }
 });
 
-client.login(process.env.BOT_TOKEN).catch("token invalid");
+//client.login(process.env.BOT_TOKEN);
